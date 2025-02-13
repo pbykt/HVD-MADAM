@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Virtual Valentine Chat</title>
+    <title>Virtual Valentine Card</title>
     <style>
         body {
             background-color: #ffebf0;
@@ -11,87 +11,110 @@
             font-family: Arial, sans-serif;
             overflow: hidden;
         }
-        .chat-container {
-            width: 300px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin: auto;
+        .container {
+            position: relative;
             margin-top: 50px;
         }
-        .chat-box {
-            height: 200px;
-            overflow-y: auto;
-            border: 1px solid #ccc;
-            padding: 10px;
+        .heart {
+            position: absolute;
+            color: red;
+            font-size: 24px;
+            animation: float 4s linear infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+        .card {
+            background: white;
+            padding: 20px;
             border-radius: 10px;
-            display: flex;
-            flex-direction: column;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            position: relative;
+            animation: fadeIn 1.5s ease-in-out;
         }
-        .message {
-            padding: 10px;
-            border-radius: 10px;
-            margin: 5px 0;
-            width: fit-content;
-            max-width: 80%;
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
         }
-        .left {
-            background: #ff85a2;
-            color: white;
-            align-self: flex-start;
+        .hidden-message {
+            display: none;
+            color: #d63384;
+            font-weight: bold;
         }
-        .right {
-            background: #ffd1dc;
-            color: black;
-            align-self: flex-end;
+        .message-history {
+            display: none;
+            margin-top: 20px;
+            text-align: left;
+            max-width: 300px;
             margin-left: auto;
+            margin-right: auto;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
         }
-        .input-container {
-            margin-top: 10px;
-            display: flex;
-        }
-        input {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            padding: 8px 12px;
-            background: #ff85a2;
-            border: none;
-            color: white;
-            border-radius: 5px;
-            margin-left: 5px;
+        .eye-icon {
             cursor: pointer;
+            font-size: 20px;
+            color: white;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            transition: transform 0.3s ease-in-out;
+        }
+        .eye-icon:hover {
+            transform: scale(1.2);
         }
     </style>
 </head>
 <body>
-    <h1>💖 Virtual Valentine Chat 💖</h1>
-    <div class="chat-container">
-        <div class="chat-box" id="chatBox"></div>
-        <div class="input-container">
-            <input type="text" id="messageInput" placeholder="Type your message...">
-            <button onclick="sendMessage()">Send</button>
+    <div class="container">
+        <h1>💖 Happy Valentine's Day! 💖</h1>
+        <div class="card">
+            <p>Enter your custom message:</p>
+            <input type="text" id="message" placeholder="Type your message here...">
+            <button onclick="revealMessage()">Show Surprise</button>
+            <p class="hidden-message" id="valentineMessage"></p>
+            <span class="eye-icon" onclick="toggleHistory()">👁️</span>
+        </div>
+        <div class="message-history" id="historyContainer">
+            <h3>Message History:</h3>
+            <ul id="historyList"></ul>
         </div>
     </div>
 
     <script>
-        function sendMessage() {
-            const input = document.getElementById("messageInput");
-            const message = input.value.trim();
-            if (message === "") return;
+        function createHeart() {
+            const heart = document.createElement("div");
+            heart.classList.add("heart");
+            heart.innerHTML = "❤️";
+            document.body.appendChild(heart);
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.animationDuration = Math.random() * 2 + 3 + "s";
+            setTimeout(() => heart.remove(), 4000);
+        }
+        setInterval(createHeart, 300);
 
-            const chatBox = document.getElementById("chatBox");
-            const userMessage = document.createElement("div");
-            userMessage.classList.add("message", "right");
-            userMessage.textContent = message;
-            chatBox.appendChild(userMessage);
+        function revealMessage() {
+            const message = document.getElementById("message").value;
+            const valentineMessage = document.getElementById("valentineMessage");
+            valentineMessage.textContent = message || "You are loved! 💕";
+            valentineMessage.style.display = "block";
+            
+            if (message) {
+                const historyList = document.getElementById("historyList");
+                const listItem = document.createElement("li");
+                listItem.textContent = message;
+                historyList.appendChild(listItem);
+            }
+        }
 
-            input.value = "";
-            chatBox.scrollTop = chatBox.scrollHeight;
+        function toggleHistory() {
+            const historyContainer = document.getElementById("historyContainer");
+            historyContainer.style.display = historyContainer.style.display === "none" ? "block" : "none";
         }
     </script>
 </body>
